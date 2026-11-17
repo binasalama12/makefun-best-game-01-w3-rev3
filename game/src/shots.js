@@ -28,23 +28,33 @@ export function setupShotScene(state, api) {
     api.startNight(8, seed, { keepScore: false });
     solveRoom(state.room);
     state.mode = 'title';
+    // The staged title web is a solved night-8 showcase, so the HUD must
+    // tell a coherent story: seven nights already cleared behind this one,
+    // with the score and burn count those nights would have earned.
+    state.score = 5760; state.burned = 52; state.nightsCleared = 7;
+    state.best = 5760; state.shadow = 18;
     state.moths = fixedMoths(state.room, [[980, 210], [1080, 420], [860, 540]]);
   } else if (shot === 'play') {
     api.startNight(5, seed, { keepScore: false });
-    // Nearly solved: every shard true but the last bend, so the web is one
-    // click from complete and only the final leg still lies dark.
+    // Fully solved: the whole web burns at once, every leg lit. The night
+    // still is not cleared because one lantern is smothered — a moth sits
+    // on its glass (smother far outlasts the frozen capture), so the frame
+    // is mid-fight: complete web, live combo, moths in the air.
     solveRoom(state.room);
-    const path = state.room.mirrors.filter((m) => m.onPath);
-    const lastBend = path[path.length - 1];
-    if (lastBend) lastBend.tilt = 1 - lastBend.tilt;
     state.mode = 'play';
-    state.score = 1240; state.burned = 9; state.shadow = 26;
-    state.moths = fixedMoths(state.room, [[900, 180], [1030, 330], [760, 470], [1120, 560]]);
+    state.score = 2380; state.burned = 14; state.shadow = 34;
+    state.streak = 4; state.streakTimer = 30; state.bestStreak = 6;
+    const mid = state.room.lanterns[Math.floor(state.room.lanterns.length / 2)];
+    if (mid) mid.smother = 30;
+    const spots = [[880, 170], [1050, 300], [700, 520], [1160, 470], [520, 180], [980, 600]];
+    if (mid) spots.push([mid.x + 26, mid.y - 18]);
+    state.moths = fixedMoths(state.room, spots);
   } else if (shot === 'feature') {
     api.startNight(12, seed, { keepScore: false });
     solveRoom(state.room);
     state.mode = 'play';
     state.score = 6840; state.burned = 41; state.shadow = 34;
+    state.streak = 3; state.streakTimer = 30; state.bestStreak = 8;
     const b = state.room.boss;
     if (b) { b.x = 880; b.y = 300; b.hp = b.maxHp * 0.55; }
     state.moths = fixedMoths(state.room, [[700, 150], [1010, 480], [620, 560], [1150, 220]]);
