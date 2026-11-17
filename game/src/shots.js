@@ -1,6 +1,6 @@
 // Deterministic screenshot scenes for PRISMKEEP, driven by the URL:
 //   ?shot=title&seed=7    the title over a solved Mirror-Vault web
-//   ?shot=play&seed=7     night 5 mid-play, moths in flight, HUD live
+//   ?shot=play&seed=485   night 6 mid-play, moths in flight, HUD live
 //   ?shot=feature&seed=7  night 12: the densest web, prisms split, boss out
 //   ?shot=end&seed=7      the dawn-breaks victory screen with full stats
 // Each scene is built from the game's own code with a fixed seed and a fixed
@@ -35,18 +35,23 @@ export function setupShotScene(state, api) {
     state.best = 5760; state.shadow = 18;
     state.moths = fixedMoths(state.room, [[980, 210], [1080, 420], [860, 540]]);
   } else if (shot === 'play') {
-    api.startNight(5, seed, { keepScore: false });
-    // Fully solved: the whole web burns at once, every leg lit. The night
-    // still is not cleared because one lantern is smothered — a moth sits
-    // on its glass (smother far outlasts the frozen capture), so the frame
-    // is mid-fight: complete web, live combo, moths in the air.
+    api.startNight(6, seed, { keepScore: false });
+    // Fully solved: the whole web burns at once, every leg lit — and this
+    // night's web is woven wall to wall. It dives down the left, crosses to
+    // a prism that splits it north and clean east to the rim, and the north
+    // branch bends east and drops a lit spine down the right side to the
+    // grand lantern, so no quarter of the floor stays dark for long. The
+    // night still is not cleared because one lantern is smothered — a moth
+    // sits on its glass (smother far outlasts the frozen capture), so the
+    // frame is mid-fight: complete web, live combo, moths in the air on
+    // both sides of the keep.
     solveRoom(state.room);
     state.mode = 'play';
     state.score = 2380; state.burned = 14; state.shadow = 34;
     state.streak = 4; state.streakTimer = 30; state.bestStreak = 6;
     const mid = state.room.lanterns[Math.floor(state.room.lanterns.length / 2)];
     if (mid) mid.smother = 30;
-    const spots = [[880, 170], [1050, 300], [700, 520], [1160, 470], [520, 180], [980, 600]];
+    const spots = [[1085, 175], [1155, 320], [1105, 565], [865, 585], [545, 175], [215, 585]];
     if (mid) spots.push([mid.x + 26, mid.y - 18]);
     state.moths = fixedMoths(state.room, spots);
   } else if (shot === 'feature') {

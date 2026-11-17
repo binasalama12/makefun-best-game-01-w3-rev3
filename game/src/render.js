@@ -274,16 +274,30 @@ function drawWalls(ctx, room) {
       ctx.beginPath(); ctx.moveTo(w.x - 3, w.y - 1); ctx.lineTo(w.x + w.w + 3, w.y - 1); ctx.stroke();
       ctx.globalAlpha = 1;
     } else if (room.realm === 1) {
-      // Mirror Vault: a crystal cluster sprouts from the block.
-      for (let k = 0; k < 3; k++) {
-        const bx = w.x + (k + 0.5) * (w.w / 3);
-        const hh = 16 + hash2(seed, k * 7) * Math.min(30, w.h);
-        const hw = 7 + hash2(seed + k, 3) * 6;
+      // Mirror Vault: a crystal cluster sprouts from the block. No two
+      // blocks grow alike — shard count, spacing, lean and heights all
+      // come from the wall's own hash, so neighbouring blocks never read
+      // as copies of one another.
+      const shards = 2 + Math.floor(hash2(seed, 21) * 3); // 2..4
+      for (let k = 0; k < shards; k++) {
+        const slot = (k + 0.5) / shards;
+        const bx = w.x + slot * w.w + (hash2(seed, k * 13 + 5) - 0.5) * (w.w / shards) * 0.5;
+        const hh = 13 + hash2(seed, k * 7) * Math.min(38, w.h + 8);
+        const hw = 6 + hash2(seed + k, 3) * 7;
+        const lean = (hash2(seed, k * 17 + 9) - 0.5) * 7;
         const cg = ctx.createLinearGradient(bx, w.y - hh, bx, w.y + 6);
         cg.addColorStop(0, '#eaf6ff'); cg.addColorStop(0.6, '#8fc3ee'); cg.addColorStop(1, '#3d6ea8');
         ctx.fillStyle = cg;
-        ctx.beginPath(); ctx.moveTo(bx - hw, w.y + 4); ctx.lineTo(bx, w.y - hh); ctx.lineTo(bx + hw, w.y + 4); ctx.closePath(); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(bx - hw, w.y + 4); ctx.lineTo(bx + lean, w.y - hh); ctx.lineTo(bx + hw, w.y + 4); ctx.closePath(); ctx.fill();
         ctx.strokeStyle = 'rgba(255,255,255,0.65)'; ctx.lineWidth = 1.2; ctx.stroke();
+      }
+      // A small satellite shard beside the cluster on wider blocks.
+      if (w.w > 84) {
+        const bx = w.x + w.w * (0.14 + hash2(seed, 31) * 0.1);
+        const hh = 8 + hash2(seed, 33) * 8;
+        ctx.fillStyle = '#8fc3ee';
+        ctx.beginPath(); ctx.moveTo(bx - 4.5, w.y + 4); ctx.lineTo(bx, w.y - hh); ctx.lineTo(bx + 4.5, w.y + 4); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 1; ctx.stroke();
       }
       ctx.fillStyle = 'rgba(255,255,255,0.14)';
       ctx.fillRect(w.x, w.y, w.w, 5);
