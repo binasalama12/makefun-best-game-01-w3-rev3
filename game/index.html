@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PRISMKEEP — bend the dawn-beam, light 12 nights, burn the Nightmare Moth</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #07060e; height: 100%; overflow: hidden; }
+  body { display: flex; align-items: center; justify-content: center; font-family: Georgia, 'Times New Roman', serif; }
+  #stage { position: relative; width: 1280px; height: 720px; max-width: 100vw; max-height: 100vh; }
+  canvas { display: block; width: 1280px; height: 720px; background: #0a0918; cursor: pointer; }
+  #hud {
+    position: absolute; left: 0; right: 0; top: 0; height: 46px;
+    display: flex; align-items: center; gap: 22px; padding: 0 18px;
+    color: #ffe9b8; font-size: 17px; letter-spacing: .04em;
+    background: linear-gradient(180deg, rgba(5,4,14,.88), rgba(5,4,14,.55) 70%, rgba(5,4,14,0));
+    pointer-events: none; text-shadow: 0 1px 3px #000;
+  }
+  #hud .lab { color: #b9a8e8; font-size: 12px; text-transform: uppercase; letter-spacing: .18em; margin-right: 6px; }
+  #hud .val { font-weight: bold; }
+  #shadowrap { flex: 0 0 210px; height: 10px; border: 1px solid #6b5aa8; border-radius: 5px; background: rgba(20,14,44,.8); overflow: hidden; }
+  #shadowbar { height: 100%; width: 0%; background: linear-gradient(90deg, #7a4fd0, #c03a6e); transition: width .2s; }
+  #msg {
+    position: absolute; left: 0; right: 0; bottom: 10px; text-align: center;
+    color: #ffe9b8; font-size: 16px; pointer-events: none; text-shadow: 0 1px 4px #000;
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="game" width="1280" height="720"></canvas>
+  <div id="hud">
+    <span><span class="lab">Night</span><span class="val" id="h-night">–</span></span>
+    <span><span class="lab">Realm</span><span class="val" id="h-realm">–</span></span>
+    <span><span class="lab">Lanterns</span><span class="val" id="h-lanterns">0/0</span></span>
+    <span><span class="lab">Moths burned</span><span class="val" id="h-burned">0</span></span>
+    <span><span class="lab">Score</span><span class="val" id="h-score">0</span></span>
+    <span><span class="lab">Shadow</span></span><span id="shadowrap"><span id="shadowbar"></span></span>
+  </div>
+  <div id="msg"></div>
+</div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
